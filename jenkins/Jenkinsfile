@@ -1,0 +1,74 @@
+@Library('son-dev-utils-shared-library')
+import jenkins.utils.*
+logging = new logging() // https://gerrit.ericsson.se/gitweb?p=OSS/com.ericsson.oss.services.sonom/son-dev-utils.git;a=blob_plain;f=src/jenkins/utils/logging.groovy;hb=master
+utils = new utils()    //https://gerrit.ericsson.se/gitweb?p=OSS/com.ericsson.oss.services.sonom/son-dev-utils.git;a=blob_plain;f=src/jenkins/utils/utils.groovy;hb=master
+pipeline {
+    agent {
+        node {
+            label SLAVE
+        }
+    }
+    options {
+        skipDefaultCheckout true
+        timestamps()
+        timeout(time: 1, unit: 'HOURS')
+        buildDiscarder(logRotator(numToKeepStr: '40', artifactNumToKeepStr: '20'))
+    }
+    stages {
+        stage('Clean') {
+            steps {
+                sh '''
+                    echo "Cleanup workspace"
+                    sudo chmod -fR 777 "${WORKSPACE}"
+                    sudo rm -Rf ./*
+                '''
+                echo 'SCM Checkout'
+                checkout scm
+            }
+        }
+        stage('Init') {
+            steps {
+                script {
+                    utils.injectFiles()
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    utils.mavenInstallWithStaticAnalysis()
+                }
+            }
+        }
+        stage('Release') {
+            when {
+                expression { env.RELEASE == "true" }
+            }
+            steps {
+                sh "mvn -B -V -Dresume=false release:prepare release:perform -DpreparationGoals='install' -Dgoals='clean deploy pmd:pmd jacoco:report' -DlocalCheckout=true"
+                // Modify the build description
+                script {
+                    try {
+                        def matcher = manager.getLogMatcher('.*\\[INFO\\] \\[INFO\\] Building \\[ecson-release-versions\\] POM (.*)\\s+\\[\\d+\\/\\d+\\]')
+                        if (matcher != null) {
+                            currentBuild.description = matcher.group(2)
+                        }
+                    }
+                    catch (ignored) {}
+                }
+            }
+        }
+	}
+    post {
+        always {
+            script {
+                utils.postAlways()
+            }
+        }
+        failure {
+            script {
+                utils.postFailure()
+            }
+        }
+    }
+}

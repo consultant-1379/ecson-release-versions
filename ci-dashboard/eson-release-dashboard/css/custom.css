@@ -1,0 +1,78 @@
+html,
+ body {
+   zoom: 90%;
+   height: 100%;
+   padding-top: 5px;
+   padding-bottom: 5x;
+   background-color: #333;
+   color: #fff;
+   overflow-x: hidden;
+   margin-left:5px;
+   margin-right:5px;
+ }
+
+ .footer {
+   color: #fff;
+   display: flex;
+ }
+
+ .masthead {
+   color: #fff;
+ }
+
+ .stable {
+   background-color: darkgreen;
+ }
+ .unstable {
+   background-color: #f59400;
+ }
+ .failure {
+   background-color: darkred;
+ }
+ .tested{
+   background-color: darkgreen;
+ }
+ .running {
+   color: #FF5733;
+ }
+ .services {
+   background-color: #000080;
+ }
+ .title {
+   background-color: #ADD8E6;
+ }
+.verticalLine {
+  border-left: thick solid #FFFF99;
+}
+
+
+ a:link {
+         background-color: transparent;
+		 color: white;
+ }
+
+ a:visited {
+  color: white;
+}
+
+a:hover {
+  color: white;
+}
+
+/* selected link */
+a:active {
+  color: white;
+}
+
+/* Tablet Landscape */
+@media screen and (max-width: 1060px) {
+    #primary { width:67%; }
+    #secondary { width:30%; margin-left:3%;}  
+}
+/* Tabled Portrait */
+@media screen and (max-width: 768px) {
+    #primary { width:100%; }
+    #secondary { width:100%; margin:0; border:none; }
+}
+
+

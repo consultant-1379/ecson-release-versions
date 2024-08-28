@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.ericsson.oss.services.sonom</groupId>
+    <artifactId>ecson-release-versions</artifactId>
+    <version>1.0.144-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>[${project.artifactId}] POM</name>
+
+    <url>http://www.ericsson.com</url>
+    <organization>
+        <name>Ericsson</name>
+    </organization>
+
+    <properties>
+        <ericsson.scm.url>
+            scm:git:[fetch=]ssh://gerritmirror-ha.lmera.ericsson.se:29418/OSS/com.ericsson.oss.ci.sonom/ecson-release-versions[push=]ssh://gerrit.ericsson.se:29418/OSS/com.ericsson.oss.ci.sonom/ecson-release-versions
+        </ericsson.scm.url>
+        <eson.nexus.url>https://arm1s11-eiffel112.eiffel.gic.ericsson.se:8443/nexus</eson.nexus.url>
+    </properties>
+
+    <scm>
+        <developerConnection>${ericsson.scm.url}</developerConnection>
+        <connection>${ericsson.scm.url}</connection>
+		<tag>HEAD</tag>
+    </scm>
+
+    <!-- Deployment of versioned documentation -->
+    <distributionManagement>
+        <site>
+            <id>site</id>
+            <name>Site</name>
+            <url>${site.url}/ecson-release-versions/${project.version}</url>
+        </site>
+        <!-- Deployment of versioned artifacts  -->
+        <repository>
+            <id>eson-releases</id>
+            <name>eSON Releases</name>
+            <url>${eson.nexus.url}/content/repositories/eson-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>eson-snapshots</id>
+            <name>eSON Snapshots</name>
+            <url>${eson.nexus.url}/content/repositories/eson-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>generate-code-coverage-report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
